@@ -1,4 +1,18 @@
-from layerscapy.HomePlugAV import *
+# SPDX-License-Identifier: GPL-2.0-or-later
+# This file is part of Scapy
+# See https://scapy.net/ for more information
+
+# scapy.contrib.description = HomePlugGP Layer
+# scapy.contrib.status = loads
+
+
+from scapy.packet import Packet, bind_layers
+from scapy.fields import ByteEnumField, ByteField, FieldLenField, \
+    MACField, PacketListField, ShortField, \
+    StrFixedLenField, XIntField, PacketField \
+
+# This layer extends HomePlug AV one
+from scapy.contrib.homeplugav import HomePlugAV, QualcommTypeList
 
 # Copyright (C) HomePlugGP Layer for Scapy by FlUxIuS (Sebastien Dudek)
 # As HomePlug GreenPHY is a subset of HomePlug AV, that is why we use
@@ -116,7 +130,7 @@ class CM_SLAC_MATCH_REQ(Packet):
     fields_desc = [ByteField("ApplicationType", 0x0),
                    ByteField("SecurityType", 0x0),
                    FieldLenField("MatchVariableFieldLen", None,
-                                 count_of="VariableField", fmt="H"),
+                                 length_of="VariableField", fmt="<H"),
                    PacketField("VariableField",
                                SLAC_varfield(),
                                SLAC_varfield)]
@@ -140,7 +154,7 @@ class CM_SLAC_MATCH_CNF(Packet):
     fields_desc = [ByteField("ApplicationType", 0x0),
                    ByteField("SecurityType", 0x0),
                    FieldLenField("MatchVariableFieldLen", None,
-                                 count_of="VariableField", fmt="H"),
+                                 length_of="VariableField", fmt="<H"),
                    PacketField("VariableField",
                                SLAC_varfield_cnf(),
                                SLAC_varfield_cnf)]

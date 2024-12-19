@@ -5,6 +5,7 @@ import binascii
 from layerscapy.HomePlugAV import *
 from optparse import OptionParser
 from genDAK import *
+from scapy.all import sendp, sniff
 
 dictio = {}
 

